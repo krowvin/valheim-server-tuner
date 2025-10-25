@@ -4,12 +4,12 @@
 
 ---
 
-## 🛡️ Overview
+## Overview
 
 This project extends the [lloesche/valheim-server](https://github.com/lloesche/valheim-server-docker) Docker image with an automated patcher that raises the server's internal **send/receive queue size** (default `10240 bytes`) to a higher configurable value, typically **30720 bytes**.  
 This can reduce desyncs, rubber-banding, and “lag spikes” caused by Valheim's small network packet buffer.
 
-## 📜 Notes from the Mead Hall
+## Notes from the Mead Hall
 
 There are mods that exist that do very similar things, if not the same thing. You might consider those first.
 Namely:
@@ -30,19 +30,11 @@ I opted to go this route so I could have full control the server files and their
 
 ### How to Use
 
-You must include the `PRE_START_HOOK` to your environment variables to called the built CS program in the valheim-server-tuner docker image. To do this simply include the following in your environment variables for your Docker server:
+Setup your docker instance to use the image located here:
 
-```bash
-# IMPORTANT: run the patch AFTER updates, BEFORE server start. You should see it in the logs like:
-#   [pre-start-hook] Running pre-start hook: /opt/valheim-tools/ValheimNetPatcher /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll
-#   [patcher] Patched 2 occurrence(s) (found 2) to 30720 in assembly_valheim.dll
-PRE_START_HOOK: >
-  /opt/valheim-tools/ValheimNetPatcher
-  /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll
-```
+[`image: ghcr.io/krowvin/valheim-server-tuner:latest`](https://github.com/krowvin/valheim-server-tuner/pkgs/container/valheim-server-tuner)
 
-Example here:
-[docker-compose.yml](/docker-compose.yml#39-44)
+When the server starts (update or otherwise) it will run the PRE_START_HOOK mentioned above to monkey patch the DLL files with the new send/receive queue size.
 
 ### Technical Reference
 
@@ -55,12 +47,12 @@ Original discovery and rationale for the patch:
 
 ```
 valheim-server-tuner/
+├── .github
+| └── workflows
+|   └── publish.yml
 ├── Dockerfile
 ├── docker-compose.yml
-├── patcher/
-│ ├── Program.cs
-│ └── ValheimNetPatcher.csproj
-├── config/
-│ └── adminlist.txt # optional, for server admin Steam64 IDs
-└── data/ # world files, generated at runtime
+└── patcher/
+  ├── Program.cs
+  └── ValheimNetPatcher.csproj
 ```

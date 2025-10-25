@@ -13,3 +13,5 @@ RUN chmod +x /opt/valheim-tools/ValheimNetPatcher
 
 # Default queue limit (bytes). Override in compose if you want.
 ENV VALHEIM_SEND_QUEUE_LIMIT=30720
+# make patch output persist under /config (volume) and run on every start/update
+ENV PRE_START_HOOK="/bin/sh -lc '/opt/valheim-tools/ValheimNetPatcher /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll | tee -a /config/patcher.log'"

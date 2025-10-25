@@ -35,10 +35,3 @@ services:
       # If you later want to disable schedule then set to empty strings:
       # UPDATE_CRON: ""
       # RESTART_CRON: ""
-
-      # IMPORTANT: run the patch AFTER updates, BEFORE server start. You should see it in the logs like:
-      #   [pre-start-hook] Running pre-start hook: /opt/valheim-tools/ValheimNetPatcher /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll
-      #   [patcher] Patched 2 occurrence(s) (found 2) to 30720 in assembly_valheim.dll
-      PRE_START_HOOK: >
-        /opt/valheim-tools/ValheimNetPatcher
-        /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll

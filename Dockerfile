@@ -9,9 +9,10 @@ FROM ghcr.io/lloesche/valheim-server:latest
 
 # Add the patcher binary and make it executable
 COPY --from=patcher-build /out/ValheimNetPatcher /opt/valheim-tools/ValheimNetPatcher
-RUN chmod +x /opt/valheim-tools/ValheimNetPatcher
+COPY scripts/pre_start.sh /opt/valheim-tools/pre_start.sh
+RUN chmod +x /opt/valheim-tools/ValheimNetPatcher /opt/valheim-tools/pre_start.sh
 
 # Default queue limit (bytes). Override in compose if you want.
 ENV VALHEIM_SEND_QUEUE_LIMIT=30720
 # make patch output persist under /config (volume) and run on every start/update
-ENV PRE_START_HOOK="/bin/sh -lc '/opt/valheim-tools/ValheimNetPatcher /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll | tee -a /config/patcher.log'"
+ENV PRE_START_HOOK="/bin/sh -lc '/opt/valheim-tools/pre_start.sh'"

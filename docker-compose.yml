@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  valheim:
+    container_name: valheim
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: valheim-sqpatch:local
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+    stop_grace_period: 120s
+    ports:
+      - "2456-2457:2456-2457/udp"
+    volumes:
+      # Persist config and world/data files on the host
+      - ./config:/config
+      - ./data:/opt/valheim
+    environment:
+      # Valheim server basics
+      SERVER_NAME: "MyServer"
+      WORLD_NAME: "MyWorld"
+      SERVER_PASS: "supersecret"
+      SERVER_PUBLIC: "true"
+      CONFIG_DIR: /config
+
+      # IL patch limit (bytes)
+      # The original value is 10240, increasing it can help with lag on larger servers (more players/objects) at the cost of higher network usage.
+      # Read more: https://jamesachambers.com/revisiting-fixing-valheim-lag-modifying-send-receive-limits/
+      VALHEIM_SEND_QUEUE_LIMIT: "30720"
+
+      # Updates / restarts
+      # Leave these UNSET (default behavior) if you're okay with the image's auto-update.
+      # If you later want to disable schedule then set to empty strings:
+      # UPDATE_CRON: ""
+      # RESTART_CRON: ""
+
+      # IMPORTANT: run the patch AFTER updates, BEFORE server start. You should see it in the logs like:
+      #   [pre-start-hook] Running pre-start hook: /opt/valheim-tools/ValheimNetPatcher /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll
+      #   [patcher] Patched 2 occurrence(s) (found 2) to 30720 in assembly_valheim.dll
+      PRE_START_HOOK: >
+        /opt/valheim-tools/ValheimNetPatcher
+        /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll

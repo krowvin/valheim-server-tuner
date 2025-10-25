@@ -28,6 +28,22 @@ I opted to go this route so I could have full control the server files and their
 - Keeps SteamCMD auto-updates enabled — so the game still updates normally, and the patch is automatically re-applied afterward.
 - Requires **no external mods or clients** — this is a _server-only_ runtime patch.
 
+### How to Use
+
+You must include the `PRE_START_HOOK` to your environment variables to called the built CS program in the valheim-server-tuner docker image. To do this simply include the following in your environment variables for your Docker server:
+
+```bash
+# IMPORTANT: run the patch AFTER updates, BEFORE server start. You should see it in the logs like:
+#   [pre-start-hook] Running pre-start hook: /opt/valheim-tools/ValheimNetPatcher /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll
+#   [patcher] Patched 2 occurrence(s) (found 2) to 30720 in assembly_valheim.dll
+PRE_START_HOOK: >
+  /opt/valheim-tools/ValheimNetPatcher
+  /opt/valheim/server/valheim_server_Data/Managed/assembly_valheim.dll
+```
+
+Example here:
+[docker-compose.yml](/docker-compose.yml#39-44)
+
 ### Technical Reference
 
 Original discovery and rationale for the patch:  

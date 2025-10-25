@@ -37,6 +37,7 @@ Original discovery and rationale for the patch:
 
 ## Repository Layout
 
+```
 valheim-server-tuner/
 ├── Dockerfile
 ├── docker-compose.yml
@@ -46,3 +47,4 @@ valheim-server-tuner/
 ├── config/
 │ └── adminlist.txt # optional, for server admin Steam64 IDs
 └── data/ # world files, generated at runtime
+```
